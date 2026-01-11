@@ -44,7 +44,7 @@ class Api::V1::UsersController < ApplicationController
       def signup
         user = User.new(attributes)
         if user.save
-          render_json_api(user, :created)
+          render_json_api(UserSerializer.new(user).as_json, :created)
         else
           render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
         end
@@ -87,7 +87,7 @@ class Api::V1::UsersController < ApplicationController
         user = User.find_by(email: auth_params[:email])
 
         if user&.authenticate(auth_params[:password])
-          render_json_api(user, :ok)
+          render_json_api(UserSerializer.new(user).as_json, :ok)
         else
           render json: { errors: [ "Invalid email or password" ] }, status: :unauthorized
         end

@@ -23,7 +23,8 @@ class Api::V1::ContentsController < ApplicationController
   #   ]
   def index
     contents = Content.order(created_at: :desc)
-    render_json_api(contents, :ok)
+    serialized = contents.map { |content| ContentSerializer.new(content).as_json }
+    render_json_api(serialized, :ok)
   end
 
   # GET /api/v1/contents/:id
@@ -50,7 +51,7 @@ class Api::V1::ContentsController < ApplicationController
   #   }
   def show
     content = Content.find(params[:id])
-    render_json_api(content, :ok)
+    render_json_api(ContentSerializer.new(content).as_json, :ok)
   end
 
   # POST /api/v1/contents
@@ -87,7 +88,7 @@ class Api::V1::ContentsController < ApplicationController
   def create
     content = current_user.contents.build(content_params)
     if content.save
-      render_json_api(content, :created)
+      render_json_api(ContentSerializer.new(content).as_json, :created)
     else
       render json: { errors: content.errors.full_messages }, status: :unprocessable_entity
     end
@@ -126,7 +127,7 @@ class Api::V1::ContentsController < ApplicationController
   #   }
   def update
     if @content.update(content_params)
-      render_json_api(@content, :ok)
+      render_json_api(ContentSerializer.new(@content).as_json, :ok)
     else
       render json: { errors: @content.errors.full_messages }, status: :unprocessable_entity
     end
