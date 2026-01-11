@@ -4,15 +4,13 @@ class Api::V1::UsersController < ApplicationController
       #
       # Creates a new user account.
       #
-      # @param [String] first_name Required - user's first name
-      # @param [String] last_name Required - user's last name
-      # @param [String] email Required - user's email (must be unique)
-      # @param [String] password Required - user's password
-      # @param [String] country Optional - user's country
-      #
-      # @return [JSON] user object with id, first_name, last_name, email, and country if successful
-      # @return [JSON] errors array if creation fails
-      #
+      # @param first_name [String] The user's first name (required).
+      # @param last_name [String] The user's last name (required).
+      # @param email [String] The user's email (required, must be unique).
+      # @param password [String] The user's password (required).
+      # @param country [String] The user's country (optional).
+      # @return [Hash] Serialized user object in JSON:API format with token if successful.
+      # @return [JSON] errors array if creation fails.
       # @example Request
       #   POST /api/v1/users/signup
       #   {
@@ -22,12 +20,12 @@ class Api::V1::UsersController < ApplicationController
       #     "password": "password",
       #     "country": "Nepal"
       #   }
-      #
       # @example Success Response
       #   HTTP 201 Created
       #   {
-      #     "user": {
-      #       "id": 1,
+      #     "id": 1,
+      #     "type": "user",
+      #     "attributes": {
       #       "first_name": "Ram",
       #       "last_name": "Basu",
       #       "email": "ram@gmail.com",
@@ -35,7 +33,6 @@ class Api::V1::UsersController < ApplicationController
       #       "token": "jwt.token.here"
       #     }
       #   }
-      #
       # @example Error Response
       #   HTTP 422 Unprocessable Entity
       #   {
@@ -54,32 +51,31 @@ class Api::V1::UsersController < ApplicationController
       #
       # Authenticates a user and returns a JWT token.
       #
-      # @param [String] email Required
-      # @param [String] password Required
-      #
-      # @return [JSON] user details and JWT token if successful
-      # @return [JSON] error message if authentication fails
-      #
+      # @param email [String] The user's email (required).
+      # @param password [String] The user's password (required).
+      # @return [Hash] Serialized user object in JSON:API format with token if successful.
+      # @return [JSON] errors array if authentication fails.
       # @example Request
       #   POST /api/v1/users/signin
       #   {
       #     "email": "aaa@gmail.com",
       #     "password": "password"
       #   }
-      #
       # @example Success Response
+      #   HTTP 200 OK
       #   {
-      #     "user": {
-      #       "id": 1,
-      #       "firstName": "aaa",
-      #       "lastName": "bbb",
+      #     "id": 1,
+      #     "type": "user",
+      #     "attributes": {
+      #       "first_name": "aaa",
+      #       "last_name": "bbb",
       #       "email": "aaa@gmail.com",
-      #       "country": "Nepal"
-      #     },
-      #     "token": "jwt.token.here"
+      #       "country": "Nepal",
+      #       "token": "jwt.token.here"
+      #     }
       #   }
-      #
       # @example Error Response
+      #   HTTP 401 Unauthorized
       #   {
       #     "errors": ["Invalid email or password"]
       #   }
@@ -95,30 +91,30 @@ class Api::V1::UsersController < ApplicationController
 
       private
 
-      # Strong parameters for creating a user
+      # Strong parameters for creating a user.
       #
-      # @return [ActionController::Parameters] permitted parameters
+      # @return [ActionController::Parameters] Permitted parameters for user creation.
       def user_params
         params.permit(:firstName, :lastName, :email, :password, :country)
       end
 
-      # Strong parameters for user authentication
+      # Strong parameters for user authentication.
       #
-      # @return [ActionController::Parameters] permitted authentication parameters
-      # @param [String] email The user's email address
-      # @param [String] password The user's password
+      # @return [ActionController::Parameters] Permitted authentication parameters.
+      # @param email [String] The user's email address.
+      # @param password [String] The user's password.
       def auth_params
         params.require(:auth).permit(:email, :password)
       end
 
       # Builds a hash of user attributes from permitted parameters.
       #
-      # @return [Hash] attributes for creating a User
-      # @attribute [String] first_name The user's first name (from user_params[:firstName])
-      # @attribute [String] last_name The user's last name (from user_params[:lastName])
-      # @attribute [String] email The user's email address (from user_params[:email])
-      # @attribute [String] password The user's password (from user_params[:password])
-      # @attribute [String] country The user's country (from user_params[:country])
+      # @return [Hash] Attributes for creating a User.
+      # @param first_name [String] The user's first name.
+      # @param last_name [String] The user's last name.
+      # @param email [String] The user's email address.
+      # @param password [String] The user's password.
+      # @param country [String] The user's country.
       def attributes
         {
           first_name: user_params[:firstName],

@@ -4,20 +4,21 @@ class Api::V1::ContentsController < ApplicationController
 
   # GET /api/v1/contents
   #
-  # Returns all contents created by the current user.
+  # Returns all contents in the system, ordered by creation date.
   #
-  # @return [JSON] Array of content objects belonging to the current user
-  #
+  # @return [Array<Hash>] Array of serialized content objects in JSON:API format.
   # @example Success Response
   #   HTTP 200 OK
   #   [
   #     {
   #       "id": 1,
-  #       "title": "My First Content",
-  #       "body": "This is the body of the content.",
-  #       "user_id": 1,
-  #       "created_at": "2026-01-11T12:00:00Z",
-  #       "updated_at": "2026-01-11T12:00:00Z"
+  #       "type": "content",
+  #       "attributes": {
+  #         "title": "My First Content",
+  #         "body": "This is the body of the content.",
+  #         "created_at": "2026-01-11T12:00:00Z",
+  #         "updated_at": "2026-01-11T12:00:00Z"
+  #       }
   #     },
   #     ...
   #   ]
@@ -31,19 +32,16 @@ class Api::V1::ContentsController < ApplicationController
   #
   # Returns a single content item by ID.
   #
-  # @param [Integer] id Required - content ID
-  # @return [JSON] content object if found
-  # @return [JSON] errors array if not found
-  #
+  # @param id [Integer] The ID of the content.
+  # @return [Hash] Serialized content object in JSON:API format if found.
+  # @return [JSON] errors array if not found.
   # @example Success Response
   #   HTTP 200 OK
   #   {
   #     "id": 1,
-  #     "title": "My First Content",
-  #     "body": "This is the body of the content.",
-  #     "user_id": 1
+  #     "type": "content",
+  #     "attributes": { ... }
   #   }
-  #
   # @example Error Response
   #   HTTP 404 Not Found
   #   {
@@ -58,28 +56,23 @@ class Api::V1::ContentsController < ApplicationController
   #
   # Creates a new content item for the current user.
   #
-  # @param [String] title Required - content title
-  # @param [String] body Required - content body
-  #
-  # @return [JSON] content object with id, title, body, user_id, created_at, and updated_at if successful
-  # @return [JSON] errors array if creation fails
-  #
+  # @param title [String] The title of the content (required).
+  # @param body [String] The body of the content (required).
+  # @return [Hash] Serialized content object in JSON:API format if successful.
+  # @return [JSON] errors array if creation fails.
   # @example Request
   #   POST /api/v1/contents
   #   {
   #     "title": "My First Content",
   #     "body": "This is the body of the content."
   #   }
-  #
   # @example Success Response
   #   HTTP 201 Created
   #   {
   #     "id": 1,
-  #     "title": "My First Content",
-  #     "body": "This is the body of the content.",
-  #     "user_id": 1
+  #     "type": "content",
+  #     "attributes": { ... }
   #   }
-  #
   # @example Error Response
   #   HTTP 422 Unprocessable Entity
   #   {
@@ -98,28 +91,24 @@ class Api::V1::ContentsController < ApplicationController
   #
   # Updates an existing content item.
   #
-  # @param [Integer] id Required - content ID
-  # @param [String] title Optional - new title
-  # @param [String] body Optional - new body
-  # @return [JSON] updated content object if successful
-  # @return [JSON] errors array if update fails
-  #
+  # @param id [Integer] The ID of the content.
+  # @param title [String] The new title (optional).
+  # @param body [String] The new body (optional).
+  # @return [Hash] Updated content object in JSON:API format if successful.
+  # @return [JSON] errors array if update fails.
   # @example Request
   #   PATCH /api/v1/contents/1
   #   {
   #     "title": "Updated Title",
   #     "body": "Updated body."
   #   }
-  #
   # @example Success Response
   #   HTTP 200 OK
   #   {
   #     "id": 1,
-  #     "title": "Updated Title",
-  #     "body": "Updated body.",
-  #     "user_id": 1
+  #     "type": "content",
+  #     "attributes": { ... }
   #   }
-  #
   # @example Error Response
   #   HTTP 422 Unprocessable Entity
   #   {
@@ -137,9 +126,8 @@ class Api::V1::ContentsController < ApplicationController
   #
   # Deletes a content item by ID.
   #
-  # @param [Integer] id Required - content ID
-  # @return [nil]
-  #
+  # @param id [Integer] The ID of the content.
+  # @return [void]
   # @example Success Response
   #   HTTP 204 No Content
   def destroy
@@ -151,8 +139,8 @@ class Api::V1::ContentsController < ApplicationController
 
   # Finds and sets the content for actions requiring an ID.
   #
-  # @param [Integer] id Required - content ID
-  # @return [Content] The found content object
+  # @param id [Integer] The ID of the content.
+  # @return [Content, nil] The found content object or nil if not found.
   def set_content
     @content = current_user.contents.find_by(id: params[:id])
 
@@ -162,9 +150,9 @@ class Api::V1::ContentsController < ApplicationController
 
   # Strong parameters for content creation and update.
   #
-  # @return [ActionController::Parameters] Permitted parameters for content
-  # @param [String] title The title of the content
-  # @param [String] body The body of the content
+  # @return [ActionController::Parameters] Permitted parameters for content.
+  # @param title [String] The title of the content.
+  # @param body [String] The body of the content.
   def content_params
     params.require(:content).permit(:title, :body)
   end
