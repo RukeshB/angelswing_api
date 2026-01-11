@@ -43,9 +43,7 @@ class Api::V1::UsersController < ApplicationController
       def signup
         user = User.new(attributes)
         if user.save
-          render json: {
-            user: UserSerializer.new(user).as_json
-          }, status: :created
+          render_json_api(user, :created)
         else
           render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
         end
@@ -89,15 +87,10 @@ class Api::V1::UsersController < ApplicationController
 
         if user&.authenticate(auth_params[:password])
           token = JsonWebToken.encode(user_id: user.id)
-
-          render json: {
-            user: UserSerializer.new(user).as_json,
-            token: token
-          }, status: :ok
+          user_data = user.as_json.merge(token: token)
+          render_json_api(user_data, :ok)
         else
-          render json: {
-            errors: [ "Invalid email or password" ]
-          }, status: :unauthorized
+          render json: { errors: ["Invalid email or password"] }, status: :unauthorized
         end
       end
 

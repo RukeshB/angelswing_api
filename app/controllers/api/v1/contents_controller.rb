@@ -23,7 +23,7 @@ class Api::V1::ContentsController < ApplicationController
   #   ]
   def index
     contents = Content.order(created_at: :desc)
-    render json: contents, status: :ok
+    render_json_api(contents, :ok)
   end
 
   # GET /api/v1/contents/:id
@@ -49,7 +49,8 @@ class Api::V1::ContentsController < ApplicationController
   #     "errors": ["Content not found"]
   #   }
   def show
-    render json: Content.find(params[:id]), status: :ok
+    content = Content.find(params[:id])
+    render_json_api(content, :ok)
   end
 
   # POST /api/v1/contents
@@ -85,12 +86,10 @@ class Api::V1::ContentsController < ApplicationController
   #   }
   def create
     content = current_user.contents.build(content_params)
-
     if content.save
-      render json: content, status: :created
+      render_json_api(content, :created)
     else
-      render json: { errors: content.errors.full_messages },
-             status: :unprocessable_entity
+      render json: { errors: content.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -127,10 +126,9 @@ class Api::V1::ContentsController < ApplicationController
   #   }
   def update
     if @content.update(content_params)
-      render json: @content, status: :ok
+      render_json_api(@content, :ok)
     else
-      render json: { errors: @content.errors.full_messages },
-             status: :unprocessable_entity
+      render json: { errors: @content.errors.full_messages }, status: :unprocessable_entity
     end
   end
 

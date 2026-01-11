@@ -38,4 +38,20 @@ class ApplicationController < ActionController::API
   def render_unauthorized
     render json: { errors: [ "Not Authorized" ] }, status: :unauthorized
   end
+
+  # Render a resource in the standard JSON:API format
+  #
+  # @param [ActiveRecord::Base, Array, Hash] data The resource or array of resources to render
+  # @param [Symbol] status HTTP status (default: :ok)
+  #
+  # The resource(s) must respond to .id, .attributes, and .class.name (for type).
+  def render_json_api(data, status = :ok)
+    if data.is_a?(Array) || data.is_a?(ActiveRecord::Relation)
+      render json: {
+        data: data.map { |resource| JsonApiSerializer.new(resource).as_json }
+      }, status: status
+    else
+      render json: { data: JsonApiSerializer.new(data).as_json }, status: status
+    end
+  end
 end
