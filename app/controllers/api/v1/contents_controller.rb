@@ -49,7 +49,7 @@ class Api::V1::ContentsController < ApplicationController
   #     "errors": ["Content not found"]
   #   }
   def show
-    render json: @content, status: :ok
+    render json: Content.find(params[:id]), status: :ok
   end
 
   # POST /api/v1/contents
@@ -155,7 +155,10 @@ class Api::V1::ContentsController < ApplicationController
   # @param [Integer] id Required - content ID
   # @return [Content] The found content object
   def set_content
-    @content ||= Content.find(params[:id])
+    @content = current_user.contents.find_by(id: params[:id])
+
+    render json: { errors: [ "Content not found" ] },
+           status: :unprocessable_entity unless @content
   end
 
   # Strong parameters for content creation and update.
