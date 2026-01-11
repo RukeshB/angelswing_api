@@ -43,7 +43,7 @@ class Api::V1::UsersController < ApplicationController
         user = User.new(attributes)
         if user.save
           render json: {
-            user: user.slice(:id, :first_name, :last_name, :email, :country)
+            user: UserSerializer.new(user).as_json
           }, status: :created
         else
           render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
@@ -90,7 +90,7 @@ class Api::V1::UsersController < ApplicationController
           token = JsonWebToken.encode(user_id: user.id)
 
           render json: {
-            user: user.slice(:id, :first_name, :last_name, :email, :country),
+            user: UserSerializer.new(user).as_json,
             token: token
           }, status: :ok
         else
@@ -109,6 +109,11 @@ class Api::V1::UsersController < ApplicationController
         params.permit(:firstName, :lastName, :email, :password, :country)
       end
 
+      # Strong parameters for user authentication
+      #
+      # @return [ActionController::Parameters] permitted authentication parameters
+      # @param [String] email The user's email address
+      # @param [String] password The user's password
       def auth_params
         params.require(:auth).permit(:email, :password)
       end
