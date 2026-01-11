@@ -44,4 +44,5 @@ group :development, :test do
 
   gem "annotate"
   gem "rspec-rails"
+  gem "pry", "~> 0.15.0"
 end
