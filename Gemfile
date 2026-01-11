@@ -31,8 +31,6 @@ gem "bootsnap", require: false
 
 gem "bcrypt", "~> 3.1"
 gem "jwt"
-gem "pundit"
-gem "dotenv-rails", groups: [ :development, :test ]
 gem "active_model_serializers"
 
 group :development, :test do
@@ -48,4 +46,5 @@ group :development, :test do
   gem "annotate"
   gem "rspec-rails"
   gem "pry", "~> 0.15.0"
+  gem "dotenv-rails"
 end
