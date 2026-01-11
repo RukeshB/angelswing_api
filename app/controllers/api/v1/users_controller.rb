@@ -1,4 +1,5 @@
 class Api::V1::UsersController < ApplicationController
+    skip_before_action :authenticate_request
       # POST /api/v1/users/signup
       #
       # Creates a new user account.
@@ -121,11 +122,11 @@ class Api::V1::UsersController < ApplicationController
       # Builds a hash of user attributes from permitted parameters.
       #
       # @return [Hash] attributes for creating a User
-      # @attribute [String] first_name The user's first name (from params[:firstName])
-      # @attribute [String] last_name The user's last name (from params[:lastName])
-      # @attribute [String] email The user's email address (from params[:email])
-      # @attribute [String] password The user's password (from params[:password])
-      # @attribute [String] country The user's country (from params[:country])
+      # @attribute [String] first_name The user's first name (from user_params[:firstName])
+      # @attribute [String] last_name The user's last name (from user_params[:lastName])
+      # @attribute [String] email The user's email address (from user_params[:email])
+      # @attribute [String] password The user's password (from user_params[:password])
+      # @attribute [String] country The user's country (from user_params[:country])
       def attributes
         {
           first_name: user_params[:firstName],
