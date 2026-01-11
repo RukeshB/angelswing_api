@@ -31,7 +31,8 @@ class Api::V1::UsersController < ApplicationController
       #       "first_name": "Ram",
       #       "last_name": "Basu",
       #       "email": "ram@gmail.com",
-      #       "country": "Nepal"
+      #       "country": "Nepal",
+      #       "token": "jwt.token.here"
       #     }
       #   }
       #
@@ -86,11 +87,9 @@ class Api::V1::UsersController < ApplicationController
         user = User.find_by(email: auth_params[:email])
 
         if user&.authenticate(auth_params[:password])
-          token = JsonWebToken.encode(user_id: user.id)
-          user_data = user.as_json.merge(token: token)
-          render_json_api(user_data, :ok)
+          render_json_api(user, :ok)
         else
-          render json: { errors: ["Invalid email or password"] }, status: :unauthorized
+          render json: { errors: [ "Invalid email or password" ] }, status: :unauthorized
         end
       end
 
