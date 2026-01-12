@@ -25,6 +25,13 @@ AngelSwing API is a Ruby on Rails–based RESTful API built as part of a technic
 
 ---
 
+## Production URL
+
+The API is deployed and accessible at:  
+**https://angelswing-api.onrender.com**
+
+---
+
 ## API Documentation (Postman)
 
 The complete API documentation is available via Postman and includes:
@@ -63,17 +70,17 @@ Authorization: Bearer <JWT_TOKEN>
 
 #### 1. Build the containers
 ```bash
-sudo docker compose build
+docker-compose build
 ```
 
 #### 2. Run the app
 ```bash
-sudo docker compose up
+docker-compose up
 ```
 
 #### 3. Setup database inside container
 ```bash
-sudo docker compose exec web rails db:create db:migrate db:seed
+docker-compose exec web rails db:create db:migrate db:seed
 ```
 
 ---
