@@ -248,14 +248,14 @@ GEM
     rspec-mocks (3.13.7)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-rails (5.1.2)
-      actionpack (>= 5.2)
-      activesupport (>= 5.2)
-      railties (>= 5.2)
-      rspec-core (~> 3.10)
-      rspec-expectations (~> 3.10)
-      rspec-mocks (~> 3.10)
-      rspec-support (~> 3.10)
+    rspec-rails (6.1.5)
+      actionpack (>= 6.1)
+      activesupport (>= 6.1)
+      railties (>= 6.1)
+      rspec-core (~> 3.13)
+      rspec-expectations (~> 3.13)
+      rspec-mocks (~> 3.13)
+      rspec-support (~> 3.13)
     rspec-support (3.13.6)
     rubocop (1.82.1)
       json (~> 2.3)
@@ -328,7 +328,7 @@ DEPENDENCIES
   pry (~> 0.15.0)
   puma (>= 5.0)
   rails (~> 7.2.3)
-  rspec-rails
+  rspec-rails (~> 6.0)
   rubocop-rails-omakase
   tzinfo-data
 
